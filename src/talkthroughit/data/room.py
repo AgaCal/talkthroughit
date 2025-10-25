@@ -1,8 +1,9 @@
+import uuid
 from pathlib import Path
 
 import streamlit as st
-import uuid
 
+from talkthroughit.llm.chat import create_ask_question_chain
 from talkthroughit.llm.retrieval import create_vector_store
 
 
@@ -12,7 +13,7 @@ def get_sessions_dir() -> Path:
     return Path(st.secrets['paths']['session_dir'])
 
 
-class Session:
+class Room:
     def __init__(self, id: str) -> None:
         self.id = id
 
@@ -44,13 +45,16 @@ class Session:
         self.vector_store = create_vector_store(docs_path)
         self.retriever = self.vector_store.as_retriever()
 
+        # Set up a question-asking chain
+        self.ask_question_chain = create_ask_question_chain(self.retriever)
+
 
 @st.cache_resource(ttl='1h')
-def get_session(id: str):
-    return Session(id)
+def get_room(id: str):
+    return Room(id)
 
 
-def create_session(topic: str, documents: list[tuple[str, bytes]]) -> str:
+def create_room(topic: str, documents: list[tuple[str, bytes]]) -> str:
     """
     Creates a new session with the given topic and documents.
     Returns the identifier for the newly created session.
@@ -59,7 +63,7 @@ def create_session(topic: str, documents: list[tuple[str, bytes]]) -> str:
     session_id = uuid.uuid4().hex
 
     # Initialize the session
-    session = get_session(session_id)
+    session = get_room(session_id)
     session.initialize(topic, documents)
 
     return session_id
