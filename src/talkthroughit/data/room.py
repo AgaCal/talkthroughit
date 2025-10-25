@@ -49,8 +49,12 @@ class Room:
         self.ask_question_chain = create_ask_question_chain(self.retriever)
 
 
-@st.cache_resource(ttl='1h')
+@st.cache_resource(ttl='1d')
 def get_room(id: str):
+    """
+    Retrieves (or creates, if missing) a Room object by its identifier.
+    The attached room data expires after one day.
+    """
     return Room(id)
 
 
