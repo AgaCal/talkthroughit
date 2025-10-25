@@ -30,12 +30,12 @@ def create_vector_store(documents_path: Path):
     documents = loader.load()
 
     # Split the loaded documents
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000, chunk_overlap=200)
     splits = text_splitter.split_documents(documents)
 
     # Create the vector store using the embeddings model
     vector_store = InMemoryVectorStore.from_documents(
-        splits,
-        embedding=get_embeddings())
+        splits, embedding=get_embeddings())
 
     return vector_store
