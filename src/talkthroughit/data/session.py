@@ -5,8 +5,11 @@ import uuid
 
 from talkthroughit.llm.retrieval import create_vector_store
 
+
 # Define the base directory for session data
-SESSION_DIR = Path(st.secrets['paths']['session_dir'])
+@st.cache_data
+def get_sessions_dir() -> Path:
+    return Path(st.secrets['paths']['session_dir'])
 
 
 class Session:
@@ -14,7 +17,7 @@ class Session:
         self.id = id
 
         # Initialize data directory if missing
-        self.path = SESSION_DIR / id
+        self.path = get_sessions_dir() / id
         self.path.mkdir(parents=True, exist_ok=True)
 
         # Initialize session attributes

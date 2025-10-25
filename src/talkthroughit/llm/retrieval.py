@@ -7,17 +7,15 @@ from langchain_community.vectorstores import InMemoryVectorStore
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 
-GEMINI_API_KEY = st.secrets['gemini']['api_key']
-GEMINI_EMBEDDINGS_MODEL = st.secrets['gemini']['embeddings_model']
-
-
 @st.cache_resource
 def get_embeddings():
     """
     Gets the embeddings model instance.
     """
-    return GoogleGenerativeAIEmbeddings(model=GEMINI_EMBEDDINGS_MODEL,
-                                        google_api_key=GEMINI_API_KEY)
+    api_key = st.secrets['gemini']['api_key']
+    embeddings_model = st.secrets['gemini']['embeddings_model']
+    return GoogleGenerativeAIEmbeddings(model=embeddings_model,
+                                        google_api_key=api_key)
 
 
 def create_vector_store(documents_path: Path):
