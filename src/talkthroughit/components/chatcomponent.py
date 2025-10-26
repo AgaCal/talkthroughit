@@ -102,6 +102,8 @@ def chat(room_info):
 
         with st.container(key='chat-bottom', border=False):
             if prompt := st.chat_input("Ask me anything...", key='chat-input'):
+                for i in range(0, 100):
+                    st.markdown(" ")
                 st.session_state.messages.append({"role": "user", "content": prompt})
                 st.rerun()
 
