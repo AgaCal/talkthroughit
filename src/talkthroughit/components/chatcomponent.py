@@ -68,15 +68,15 @@ def chat(room_info):
                 "test", whiteboard_image_b64=content
             )
         st.session_state.messages.append({"role": "assistant", "content": question})
-            # audio = elevenlabs.text_to_speech.convert(
-            #     text=question,
-            #     voice_id="JBFqnCBsd6RMkjVDRZzb",
-            #     model_id="eleven_multilingual_v2",
-            #     output_format="mp3_44100_128",
-            # )
-            # with message_container.chat_message("assistant"):
-            #     message_container.markdown(question)
-            # play(audio)
+        audio = elevenlabs.text_to_speech.convert(
+            text=question,
+            voice_id="JBFqnCBsd6RMkjVDRZzb",
+            model_id="eleven_multilingual_v2",
+            output_format="mp3_44100_128",
+        )
+        with message_container.chat_message("assistant"):
+            message_container.markdown(question)
+        play(audio)
     # with col2:
     audioRecording()
 
