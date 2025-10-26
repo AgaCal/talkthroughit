@@ -16,11 +16,16 @@ div[data-testid="stRadio"] > label > div:first-child {
 }
 .st-key-main-container > * > * > *:nth-child(2) > * {
     position: fixed !important;
+    top: 64px;
     right: 16px;
     width: inherit;
+    max-width: 320px !important;
 }
 .st-key-main-container > * > * > *:nth-child(2) > * > * > * > * {
     height: 100%;
+}
+*:has(> .st-key-main-chat-container) {
+    max-width: 300px !important;
 }
 .st-key-main-chat-container {
     height: 100% !important;
