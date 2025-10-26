@@ -89,13 +89,13 @@ class Room:
             inputs['whiteboard_image'] = whiteboard_image_b64
 
         # Invoke the chain to get a question
-        response: dict[str, bool | str] = chain.invoke(inputs)
+        response: QuestionResponse = chain.invoke(inputs)  # type: ignore
 
         # Add the user's message and the bot's question to the history
         self.message_history.append(('user', user_message))
-        self.message_history.append(('assistant', response['question']))
+        self.message_history.append(('assistant', response.question))
 
-        return response['good_enough'], response['question']  # type: ignore
+        return response.good_enough, response.question  # type: ignore
 
 
 @st.cache_resource(ttl='1d')

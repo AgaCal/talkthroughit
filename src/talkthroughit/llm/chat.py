@@ -1,7 +1,6 @@
 import streamlit as st
-from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables import RunnablePassthrough
+from langchain_core.runnables import RunnablePassthrough, RunnableLambda
 from langchain_core.vectorstores import VectorStoreRetriever
 from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel
@@ -30,46 +29,26 @@ def create_ask_question_chain(retriever: VectorStoreRetriever,
     The chain accepts an input dict containing keys: topic, input,
     whiteboard_image, chat_history.
     """
-    # Define the prompt template for summarizing the user explanation
-    summarize_system = "".join([
-        "You are a layperson trying to understand a complex topic. ",
-        "You are given the topic and a history of the user's explanation, ",
-        "as well as a current visualization (whiteboard or code) and any ",
-        "questions you've asked so far.\n",
-        "Given this, summarize the explanation so far with all relevant ",
-        "details from the user's prior answers, so we can use it to ",
-        "search for relevant information from the ground truth to ",
-        "compare against and make sure the user's explanation is accurate.\n",
-        "The topic is:\n",
-        "<topic>\n",
-        "{topic}\n",
-        "</topic>\n",
-        ("Additional explanation by the user:\n" if text_arguments else ""),
-        "\n".join([(f"<{text_arg}>\n"
-                    "{" + text_arg + "}\n"
-                    f"</{text_arg}>")
-                   for text_arg in text_arguments]),
-    ])
-    summarize_prompt = ChatPromptTemplate.from_messages([
-        ('system', summarize_system),
-        MessagesPlaceholder(variable_name='chat_history'),
-        ('human', [
-            {
-                'type': 'text',
-                'text': "{input}"
-            },
-            *[{
-                'type': 'image_url',
-                'image_url': "data:image/png;base64,{"
-                             f"{arg}"
-                             "}"
-            } for arg in image_arguments]
-        ]),
-    ])
+    def _make_retrieval_query(inputs: dict) -> str:
+        # Filter user messages and collate them for a query to the retriever
+        topic = inputs['topic']
+        history = inputs.get('chat_history', [])
 
-    # Set up a summarizing retriever chain
+        user_messages = [msg for role, msg in history if role == 'user']
+        return (
+            f"Topic: {topic}\n"
+            f"Explanation so far:\n"
+            f"{' '.join(user_messages)}"
+            f"\nCurrent input:\n"
+            f"{inputs['input']}")
+
+    # Set up a basic retriever chain
     chat_model = get_chat_model()
-    summarizing_retriever = summarize_prompt | chat_model | StrOutputParser() | retriever | (lambda docs: "\n\n".join(doc.page_content for doc in docs))
+    retriever_chain = (
+        RunnableLambda(_make_retrieval_query)
+        | retriever
+        | (lambda docs:
+           "\n\n".join(doc.page_content for doc in docs)))
 
     # Define the prompt template for generating a question to ask
     system_message = "".join([
@@ -125,9 +104,8 @@ def create_ask_question_chain(retriever: VectorStoreRetriever,
 
     # Create the top-level chain
     chain = (
-        RunnablePassthrough.assign(context=summarizing_retriever)
+        RunnablePassthrough.assign(context=retriever_chain)
         | ask_question_prompt
-        | chat_model
-        | JsonOutputParser(pydantic_object=QuestionResponse))
+        | chat_model.with_structured_output(QuestionResponse))
 
     return chain
