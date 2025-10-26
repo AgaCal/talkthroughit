@@ -58,11 +58,11 @@ def chatComponent(room_info):
     with ask:
         question_button = st.button(label="",icon=":material/question_mark:")
         if question_button:
+            content = st.session_state.current_tab_data["content"]
             if st.session_state.current_tab_data["type"] == "code":
-                code = st.session_state.current_tab_data["content"]
-                good_enough,question = room_info.get_question("test", code_snippet=code)
+                good_enough,question = room_info.get_question("test", code_snippet=content)
             else:
-                good_enough,question = room_info.get_question("test",)
+                good_enough,question = room_info.get_question("test",whiteboard_image_b64=content)
             st.session_state.messages.append({"role": "assistant", "content": question})
             with message_container.chat_message("assistant"):
                 message_container.markdown(question)
