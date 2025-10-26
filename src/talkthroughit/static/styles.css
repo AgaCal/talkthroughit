@@ -32,7 +32,7 @@ div[data-testid="stRadio"] > label > div:first-child {
     display: block !important;
 }
 *:has(> .st-key-message-container) {
-    height: 80% !important;
+    height: 90% !important;
     margin-bottom: 16px;
     overflow-y: scroll;
 }
@@ -65,7 +65,7 @@ div[data-testid="stRadio"] > label > div:first-child {
     opacity: 1.0;
 }
 .st-key-message-container {
-    height: 80% !important;
+    height: 90% !important;
     overflow-y: scroll;
 }
 .st-key-audio-container, .st-key-audio-container *, *:has(> .st-key-audio-container) {
