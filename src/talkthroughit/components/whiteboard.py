@@ -13,6 +13,8 @@ def whiteboard(width = 500, height = 500) -> st_canvas:
     returns the canvas object, to get the image data, use canvas_result.image_data
     buggy and resets on some interactions, will probably be fixed once i save stuff in session state somehow 
 
+    width and height are the dimensions of the canvas - not the entire component! menu extends beyond that
+
     make sure that the entire canvas fits in the screen!!! otherwise there's some weird behavior that's not worth fixing right now
     '''
     # to display canvas
