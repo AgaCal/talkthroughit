@@ -2,7 +2,10 @@ import streamlit as st
 from math import ceil
 from streamlit_drawable_canvas import st_canvas
 from streamlit_option_menu import option_menu
-from .color_selector import color_select # type: ignore -- it's importing fine, but vs code is being weird about it
+from .color_selector import color_select
+from PIL import Image
+from io import BytesIO
+import base64
 
 TRANSPARENT = "#00000000"
 WHITE = "#ffffff"
