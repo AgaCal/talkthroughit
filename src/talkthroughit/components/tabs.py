@@ -1,6 +1,7 @@
 import streamlit as st
-#from whiteboard import drawableCanvas
+import extra_streamlit_components as stx
 from code_editor import code_editor
+from .whiteboard import whiteboard
 
 def add_or_remove_tabs():
     with st.expander("Add or remove a tab"):
@@ -15,7 +16,7 @@ def add_or_remove_tabs():
             st.container(height=10,border=False)
             if st.button("Create"):
                 if new_tab_name:
-                    st.session_state.tabs.append({"name": new_tab_name, "type": new_tab_type})
+                    st.session_state.tabs.append({"name": new_tab_name, "type": new_tab_type, "content": ""})
                     st.rerun()
 
         # Delete tab row
@@ -37,20 +38,38 @@ def add_or_remove_tabs():
 def tabsComponent():
     if "tabs" not in st.session_state:
         st.session_state.tabs = []
+    
+    if "current_tab" not in st.session_state:
+        st.session_state.current_tab = "default"
 
     add_or_remove_tabs()
 
     if len(st.session_state.tabs) == 0:
-        st.session_state.tabs.append({"name":"default","type" : "canvas"})
+        st.session_state.tabs.append({"name":"default","type" : "canvas", "content": ""})
     
     try:
-        tab_names = [t["name"] for t in st.session_state.tabs]
-        for i,tab in enumerate(st.tabs(tab_names)):
-            with tab:
-                if st.session_state.tabs[i]["type"] == "canvas":
-                    pass
-                    #drawableCanvas()
-                if st.session_state.tabs[i]["type"] == "code":
-                    code_editor("\n" * 20)
+        tab_data = [stx.TabBarItemData(id=t["name"], title=t["name"], description="") for t in st.session_state.tabs]
+        chosen_id = stx.tab_bar(data=tab_data, default=st.session_state.current_tab)
+        st.session_state.current_tab = chosen_id
+
+        current_tab_data = next((tab for tab in st.session_state.tabs if tab["name"] == chosen_id), None)
+        current_tab_index = next((i for i, tab in enumerate(st.session_state.tabs) if tab["name"] == chosen_id), None)
+
+        st.session_state.current_tab_data = current_tab_data
+        if current_tab_data:
+            message = ""
+            if "text_from_audio" in st.session_state:
+                for audio_message,sent in st.session_state.text_from_audio:
+                    if not sent:
+                        message += audio_message + "\n"
+                        sent = True
+            print(message)
+            if current_tab_data["type"] == "canvas":
+                whiteboard()
+            if current_tab_data["type"] == "code":
+                response_dict = code_editor(st.session_state.tabs[current_tab_index]["content"])
+                if response_dict['text'] != st.session_state.tabs[current_tab_index]["content"]:
+                    st.session_state.tabs[current_tab_index]["content"] = response_dict['text']
+
     except Exception as e:
         st.error(f"An error occurred: {e}")
