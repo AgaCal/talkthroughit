@@ -15,6 +15,8 @@ voices = [
     "JBFqnCBsd6RMkjVDRZzb",
 ]
 def audioRecording():
+    if "transcriptions" not in st.session_state:
+        st.session_state.transcriptions = set()
     if "text_from_audio" not in st.session_state:
         st.session_state.text_from_audio = []
     result = audio_recorder(interval=50, threshold=-60, silenceTimeout=1000)
@@ -38,10 +40,14 @@ def audioRecording():
                         language_code="eng",
                         diarize=True,
                     )
+                    if transcription.text in st.session_state.transcriptions:
+                        return False
+                    else:
+                        st.session_state.transcription.add(transcription.text)
                     print(transcription.text)
+                    audio_data = None
                     if len(transcription.text.split()) < 10: return False
                     st.session_state.text_from_audio.append([transcription.text, False])
-                    audio_data = None
                     return True
             else:
                 pass
@@ -96,7 +102,7 @@ def chat(room_info):
             with st.container(key='chat-buttons-container', border=False):
                 if st.button("Get question", key='get-question-button'):
                     ask_a_question(room_info,message_container)
-                if audioRecording():
+                elif audioRecording():
                     ask_a_question(room_info,message_container)
 
 
