@@ -49,13 +49,13 @@ def audioRecording():
                     print(transcription.text)
                     st.session_state.text_from_audio.append([transcription.text, False])
                     audio_data = None
-                    return True    
+                    return True
             else:
                 pass
         elif result.get("error"):
             st.error(f"Error: {result.get('error')}")
-            
-            
+
+
 def ask_a_question(room_info,message_container):
     content = st.session_state.current_tab_data["content"]
     context_message = ""
@@ -71,7 +71,7 @@ def ask_a_question(room_info,message_container):
         good_enough, question = room_info.get_question(
             context_message, whiteboard_image_b64=content
         )
-    
+
     st.session_state.messages.append({"role": "assistant", "content": question})
     audio = elevenlabs.text_to_speech.convert(
         text=question,
@@ -97,13 +97,17 @@ def chat(room_info):
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.rerun()
 
+    with st.container(key='chat-buttons-container', border=False):
+        if st.button("Get a question", width=100, key='get-question-button'):
+            ask_a_question(room_info,message_container)
+        if audioRecording():
+            ask_a_question(room_info,message_container)
+
+
+def chatComponent(room_info, room_id):
     # col1, col2,empty = st.columns([1,1,10])
     # with col1:
     if st.button("Get a question", width=100, key='get-question-button'):
-        ask_a_question(room_info,message_container)
-    if audioRecording():
-        ask_a_question(room_info,message_container)
-def chatComponent(room_info,room_id):
     # float_init()
     random.seed(room_id)
     if "gemini" not in st.session_state:

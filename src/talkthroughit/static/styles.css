@@ -1,0 +1,49 @@
+.block-container {
+    padding-top: 3rem;
+    padding-bottom: 0rem;
+    padding-left: 1rem;
+    padding-right: 2rem;
+}
+.main .block-container {
+    background-color: #F0F2F6;
+}
+[data-testid="stSidebar"] {
+    background-color: #FFFFFF;
+}
+/* Sidebar radio button styling */
+div[data-testid="stRadio"] > label > div:first-child {
+    display: none; /* hide the radio circle */
+}
+.st-key-main-container > * > * > *:nth-child(2) > * {
+    position: fixed !important;
+    right: 16px;
+    width: inherit;
+}
+.st-key-chat-buttons-container {
+    display: flex !important;
+    flex-direction: row !important;
+    width: 100% !important;
+    height: 40px !important;
+}
+.st-key-get-question-button {
+    height: 40px !important;
+}
+.st-key-get-question-button > * > * > * {
+    display: inline-block !important;
+    box-sizing: border-box !important;
+}
+.st-key-get-question-button + * {
+    display: inline-block !important;
+    background: #efefef !important;
+    border-radius: 5px;
+    width: 55px;
+    height: 40px;
+    overflow: hidden;
+    margin: 0;
+    border: 1px solid rgba(49, 51, 63, 0.4);
+    opacity: 0.5;
+}
+.st-key-get-question-button + *:hover {
+    border: 1px solid rgba(49, 51, 63, 0.2);
+    opacity: 1.0;
+}

@@ -8,7 +8,7 @@ from talkthroughit.llm.chat import (
     QuestionResponse,
     create_ask_question_chain,
     create_streamed_ask_question_chain,
-    evalute_response,
+    evaluate_response,
 )
 from talkthroughit.llm.retrieval import create_vector_store
 
@@ -156,7 +156,7 @@ class Room:
         self.message_history.append(('assistant', full_response))
 
         # Second pass to determine good_enough
-        good_enough = evalute_response(full_response)
+        good_enough = evaluate_response(full_response)
         yield good_enough
 
 

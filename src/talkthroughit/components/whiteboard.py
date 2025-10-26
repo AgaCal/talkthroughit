@@ -14,7 +14,7 @@ def whiteboard(width = 500, height = 500):
     '''
     a whiteboard component using streamlit-drawable-canvas
     doesn't return anything, but saves the current image as a base64 string in st.session_state.current_tab_data["content"]
-    buggy and resets on some interactions, will probably be fixed once i save stuff in session state somehow 
+    buggy and resets on some interactions, will probably be fixed once i save stuff in session state somehow
 
     width and height are the dimensions of the canvas - not the entire component! menu extends beyond that
 
@@ -33,13 +33,13 @@ def whiteboard(width = 500, height = 500):
                 "circle": "circle",
                 "transform": "hand-index-thumb"
                 }
-            
+
             return option_menu(
-                menu_title=None, 
-                options=list(drawing_modes.keys()), 
-                icons=list(drawing_modes.values()), 
-                menu_icon="cast", 
-                default_index=0, 
+                menu_title=None,
+                options=list(drawing_modes.keys()),
+                icons=list(drawing_modes.values()),
+                menu_icon="cast",
+                default_index=0,
                 orientation="horizontal",
                 styles= {
                     "container": {"padding": "0!important", "background-color": "#fafafa"},
@@ -48,7 +48,7 @@ def whiteboard(width = 500, height = 500):
                     "nav-link-selected": {"background-color": "#77dfd3"},
                 }
             )
-        
+
         drawing_mode = select_drawing_mode()
 
     with col2:
@@ -62,7 +62,7 @@ def whiteboard(width = 500, height = 500):
         with slider_col:
             stroke_width = st.slider(label="Width", label_visibility="collapsed", min_value=1, max_value=25, value=3)
             stroke_opacity = st.slider("Opacity", label_visibility="collapsed", min_value=0.0, max_value=1.0, value=1.0)
-        fill = st.checkbox(label = "Fill?", value=True) if drawing_mode in ["rect", "circle"] else False 
+        fill = st.checkbox(label = "Fill?", value=True) if drawing_mode in ["rect", "circle"] else False
 
     with col1:
         _, tmp_col_2, _ = st.columns([1,10,1])
@@ -70,7 +70,7 @@ def whiteboard(width = 500, height = 500):
         def select_stoke_color():
             tmp_stroke_color = color_select()
             return tmp_stroke_color, tmp_stroke_color + (hex(ceil(stroke_opacity * 255))[2:]).zfill(2)
-        
+
         with (tmp_col_2):
             tmp_stroke_color, stroke_color = select_stoke_color()
 

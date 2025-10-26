@@ -226,7 +226,7 @@ def get_or_create_evaluate_response_chain():
     return chain
 
 
-def evalute_response(response_text: str) -> bool:
+def evaluate_response(response_text: str) -> bool:
     """
     Evaluates the given response text to determine if it indicates
     sufficient understanding.

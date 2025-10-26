@@ -9,39 +9,8 @@ def room_page(router,room_id):
     room_info = get_room(room_id)
 
     st.set_page_config(layout="wide")
-    st.markdown("""
-        <style>
-               .block-container {
-                    padding-top: 3rem;
-                    padding-bottom: 0rem;
-                    padding-left: 1rem;
-                    padding-right: 2rem;
-                }
-               .main .block-container {
-                    background-color: #F0F2F6;
-                }
-                [data-testid="stSidebar"] {
-                    background-color: #FFFFFF;
-                }
-                /* Sidebar radio button styling */
-                div[data-testid="stRadio"] > label > div:first-child {
-                    display: none; /* hide the radio circle */
-                }
-        </style>
-        """, unsafe_allow_html=True)
 
-    st.markdown("""<style>
-            .st-key-main-container > * {
-                height: 100vh !important;
-                display: flex !important;
-                /*overflow: hidden !important;*/
-            }
-            .st-key-main-container > * > * > *:nth-child(1) > * > * {
-                overflow: scroll !important;
-                display: block !important;
-            }
-                </style>""" , unsafe_allow_html=True)
-
+    # For some reason using .html() doesn't work at all lol
     with open('src/talkthroughit/static/styles.css', 'r') as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
