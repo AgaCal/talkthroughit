@@ -4,72 +4,65 @@ from talkthroughit.rooms.room import create_room, get_room
 from components.room import room_page
 
 def landing_page(router) -> None:
-    st.set_page_config(page_title="talkthrough.it — create session")
-    st.title("talkthrough.it — create a session")
+    st.set_page_config(page_title="talkthrough.it — Create a Session", layout="wide")
 
-    st.markdown(
-        "Enter a topic and upload one or more files to create a session."
-    )
+    st.title("talkthrough.it")
+    st.subheader("Your collaborative learning space")
 
-    topic = st.text_input("Topic", value="")
+    st.markdown("---")
 
-    uploaded = st.file_uploader(
-        "Upload files (pdf)", accept_multiple_files=True, type=['pdf'])
+    col1, col2 = st.columns(2)
 
-    if st.button("Create session"):
-        if not topic:
-            st.error("Please enter a topic before creating a session.")
-            return
+    with col1:
+        st.header("What is talkthrough.it?")
+        st.write(
+            """
+            talkthrough.it is a tool to help you learn and retain information more effectively.
+            Simply provide a topic and upload relevant documents (PDFs for now).
+            We'll create a dedicated session room for you where you can:
+            - Chat with an AI assistant about the topic.
+            - Use a whiteboard to visualize your thoughts.
+            - Write and execute code.
+            - And much more!
+            """
+        )
+        st.info("Get started on the right by creating a new session.")
 
-        if not uploaded:
-            st.error("Please upload at least one file.")
-            return
 
-        # Read uploaded files into (filename, bytes) tuples
-        documents: list[tuple[str, bytes]] = []
-        for f in uploaded:
-            try:
-                data = f.read()
-            except Exception as e:
-                st.error(f"Failed to read file {f.name}: {e}")
-                return
-            documents.append((f.name, data))
+    with col2:
+        st.header("Create a New Session")
+        with st.form(key="create_session_form"):
+            topic = st.text_input("Enter a topic for your session", key="topic_input")
+            uploaded_files = st.file_uploader(
+                "Upload your documents (PDFs only)",
+                accept_multiple_files=True,
+                type=['pdf']
+            )
+            submit_button = st.form_submit_button(label="Create Session")
 
-        with st.spinner("Creating session and processing documents..."):
-            room_id = create_room(topic, documents)
+            if submit_button:
+                if not topic:
+                    st.error("Please enter a topic.")
+                elif not uploaded_files:
+                    st.error("Please upload at least one PDF file.")
+                else:
+                    # Process files and create room
+                    documents: list[tuple[str, bytes]] = []
+                    for f in uploaded_files:
+                        try:
+                            data = f.read()
+                        except Exception as e:
+                            st.error(f"Failed to read file {f.name}: {e}")
+                            return
+                        documents.append((f.name, data))
 
-        st.success(f"Room created: {room_id}")
-        st.write("Topic:", topic)
-        st.write("Files:", [n for n, _ in documents])
+                    with st.spinner("Creating your session..."):
+                        room_id = create_room(topic, documents)
 
-        # Persist room_id in session state for QA step
-        st.session_state.room_id = room_id
-    # QA step after room creation
+                    st.session_state.room_id = room_id
+                    router.redirect(*router.build("room_page",{"room_id" : st.session_state.room_id}))
     if "room_id" in st.session_state:
         router.redirect(*router.build("room_page",{"room_id" : st.session_state.room_id}))
-        # room_id = st.session_state.room_id
-        # room = get_room(room_id)
-
-        # st.header("Explain the topic and get a question")
-        # explanation = st.text_area("Explain the topic:", key="explanation")
-
-        # if st.button("Ask me a question"):
-        #     if not explanation.strip():
-        #         st.error("Please provide an explanation before "
-        #                  "asking for a question.")
-        #         return
-
-        #     inputs = {
-        #         "topic": room.topic,
-        #         "input": explanation,
-        #         # "whiteboard_image": "",  # Ignoring whiteboard for now
-        #         "chat_history": []
-        #     }
-
-        #     with st.spinner("Generating question..."):
-        #         question = room.ask_question_chain.invoke(inputs)
-
-        #     st.write("**Bot's question:**", question)
 
 
 if __name__ == '__main__':

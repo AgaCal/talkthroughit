@@ -33,9 +33,6 @@ def audioRecording():
                 pass
         elif result.get("error"):
             st.error(f"Error: {result.get('error')}")
-def ask_me():
-    pass
-
 
 def chatComponent(room_info):
     if "gemini" not in st.session_state:
@@ -44,7 +41,7 @@ def chatComponent(room_info):
         st.session_state.messages = []
 
     st.subheader("Chat")
-    message_container = st.container(height=500, border=True)
+    message_container = st.container(height=300, border=True)
 
     with message_container:
         for message in st.session_state.messages:
@@ -53,8 +50,7 @@ def chatComponent(room_info):
 
     if prompt := st.chat_input("Ask me anything..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
-        with message_container.chat_message("user"):
-            message_container.markdown(prompt)
+        st.rerun()
 
     col1, col2 = st.columns(2)
     with col1:
