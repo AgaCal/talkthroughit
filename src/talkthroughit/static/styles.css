@@ -68,3 +68,7 @@ div[data-testid="stRadio"] > label > div:first-child {
     height: 80% !important;
     overflow-y: scroll;
 }
+.st-key-audio-container, .st-key-audio-container *, *:has(> .st-key-audio-container) {
+    display: none !important;
+    float: left !important;
+}

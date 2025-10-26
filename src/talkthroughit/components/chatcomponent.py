@@ -87,9 +87,10 @@ def ask_a_question(room_info,message_container):
     for chunk in audio:
         audio_bytes_io.write(chunk)
 
-# Get the complete bytes object
+    # Get the complete bytes object
     audio_data_bytes = audio_bytes_io.getvalue()
-    st.audio(audio_data_bytes,autoplay=True)
+    with st.container(key='audio-container', border=False):
+        st.audio(audio_data_bytes, autoplay=True)
 
 def chat(room_info):
     with st.container(key='main-chat-container',
@@ -110,6 +111,9 @@ def chat(room_info):
                     ask_a_question(room_info,message_container)
                 elif audioRecording():
                     ask_a_question(room_info,message_container)
+                else:
+                    with st.container(key='audio-container', border=False):
+                        st.write("bah")
 
 
 def chatComponent(room_info, room_id):
