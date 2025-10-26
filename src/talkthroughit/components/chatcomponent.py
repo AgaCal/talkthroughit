@@ -8,7 +8,6 @@ import tempfile
 
 elevenlabs = ElevenLabs(api_key=st.secrets["elevenlabs"]["api_key"])
 
-
 def audioRecording():
     if "text_from_audio" not in st.session_state:
         st.session_state.text_from_audio = []
@@ -34,33 +33,24 @@ def audioRecording():
                         diarize=True,
                     )
                     print(transcription.text)
-                    st.session_state.text_from_audio.append([transcription.text,False])
-                    
+                    st.session_state.text_from_audio.append([transcription.text, False])
+
             else:
                 pass
         elif result.get("error"):
             st.error(f"Error: {result.get('error')}")
 
-
-def chatComponent(room_info):
-    if "gemini" not in st.session_state:
-        st.session_state["gemini"] = "gemini-2.5-flash"
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-
-    st.subheader("Chat")
-    message_container = st.container(height=300, border=True)
-
-    with message_container:
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
+def chat(room_info):
+    message_container = st.container(height=300,border=False)
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
     if prompt := st.chat_input("Ask me anything..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.rerun()
 
-    col1, col2 = st.columns(2)
+    col1, col2  = st.columns(2)
     with col1:
         audioRecording()
     with col2:
@@ -77,3 +67,13 @@ def chatComponent(room_info):
             st.session_state.messages.append({"role": "assistant", "content": question})
             with message_container.chat_message("assistant"):
                 message_container.markdown(question)
+
+def chatComponent(room_info):
+    if "gemini" not in st.session_state:
+        st.session_state["gemini"] = "gemini-2.5-flash"
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    chat_container = st.container(height=600, border=True)
+    with chat_container:
+        chat(room_info)
+        

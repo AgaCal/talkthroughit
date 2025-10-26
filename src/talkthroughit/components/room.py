@@ -14,7 +14,7 @@ def room_page(router,room_id):
                     padding-top: 3rem;
                     padding-bottom: 0rem;
                     padding-left: 1rem;
-                    padding-right: 1rem;
+                    padding-right: 2rem;
                 }
         </style>
         """, unsafe_allow_html=True)
