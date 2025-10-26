@@ -12,14 +12,6 @@ import random
 elevenlabs = ElevenLabs(api_key=st.secrets["elevenlabs"]["api_key"])
 
 voices = [
-    "tKgCp3kvJcxolDDquyBS",
-    "giAoKpl5weRTCJK7uB9b",
-    "1BUhH8aaMvGMUdGAmWVM",
-    "qA5SHJ9UjGlW2QwXWR7w",
-    "khYwAWwYSjlxlcrwGQ16",
-    "Qggl4b0xRMiqOwhPtVWT",
-    "O4cGUVdAocn0z4EpQ9yF",
-    "kBag1HOZlaVBH7ICPE8x",
     "JBFqnCBsd6RMkjVDRZzb",
 ]
 def audioRecording():
