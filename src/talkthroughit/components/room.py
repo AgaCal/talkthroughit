@@ -5,7 +5,7 @@ from talkthroughit.rooms.room import get_room
 from streamlit_option_menu import option_menu
 
 def room_page(router,room_id):
-    st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
+    st.set_page_config(layout="wide", initial_sidebar_state="expanded")
     room_info = get_room(room_id)
 
     st.set_page_config(layout="wide")

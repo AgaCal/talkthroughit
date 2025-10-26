@@ -11,7 +11,7 @@ def render_tab_content():
     with st.container(key='tab-container', border=False):
         if current_tab_data:
             if current_tab_data["type"] == "canvas":
-                whiteboard(width=1000,height=700)
+                whiteboard(width=800,height=600)
             if current_tab_data["type"] == "code":
                 response_dict = code_editor(st.session_state.tabs[current_tab_index]["content"])
                 if response_dict['text'] != st.session_state.tabs[current_tab_index]["content"]:
