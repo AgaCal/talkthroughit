@@ -30,7 +30,7 @@ def room_page(router,room_id):
         chosen_id = option_menu(
             menu_title=None,
             options=["canvas","code"],
-            icons=["pencil","code"],
+            icons=["marker-tip","code"],
         )
         st.session_state.current_tab = chosen_id
 
