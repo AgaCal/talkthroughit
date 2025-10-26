@@ -22,11 +22,14 @@ div[data-testid="stRadio"] > label > div:first-child {
 .st-key-main-container > * > * > *:nth-child(2) > * > * > * > * {
     height: 100%;
 }
-.st-key-message-container {
+.st-key-main-chat-container {
     height: 100% !important;
+    display: block !important;
 }
-.st-key-chat-input > * > * {
-    /* padding: 16px !important; */
+*:has(> .st-key-message-container) {
+    height: 80% !important;
+    margin-bottom: 16px;
+    overflow-y: scroll;
 }
 .st-key-chat-buttons-container {
     display: flex !important;
@@ -55,8 +58,4 @@ div[data-testid="stRadio"] > label > div:first-child {
 .st-key-get-question-button + *:hover {
     border: 1px solid rgba(49, 51, 63, 0.2);
     opacity: 1.0;
-}
-.st-key-message-container {
-    height: 80% !important;
-    overflow-y: scroll;
 }

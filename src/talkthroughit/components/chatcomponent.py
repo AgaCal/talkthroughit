@@ -82,7 +82,7 @@ def ask_a_question(room_info,message_container):
 def chat(room_info):
     with st.container(key='main-chat-container',
                       border=False, vertical_alignment='distribute'):
-        message_container = st.container(border=True, key='message-container', height='stretch')
+        message_container = st.container(border=False, key='message-container', height='stretch')
         with message_container:
             for message in st.session_state.messages:
                 with st.chat_message(message["role"]):
