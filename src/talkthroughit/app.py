@@ -3,7 +3,7 @@ from streamlit_router import StreamlitRouter
 from talkthroughit.rooms.room import create_room, get_room
 from components.room import room_page
 
-def landing_page() -> None:
+def landing_page(router) -> None:
     st.set_page_config(page_title="talkthrough.it — create session")
     st.title("talkthrough.it — create a session")
 
@@ -44,37 +44,36 @@ def landing_page() -> None:
 
         # Persist room_id in session state for QA step
         st.session_state.room_id = room_id
-        session_page = router.build("room_page",{"session_id" : room_id})
-        router.redirect(*session_page)
     # QA step after room creation
     if "room_id" in st.session_state:
-        room_id = st.session_state.room_id
-        room = get_room(room_id)
+        router.redirect(*router.build("room_page",{"room_id" : st.session_state.room_id}))
+        # room_id = st.session_state.room_id
+        # room = get_room(room_id)
 
-        st.header("Explain the topic and get a question")
-        explanation = st.text_area("Explain the topic:", key="explanation")
+        # st.header("Explain the topic and get a question")
+        # explanation = st.text_area("Explain the topic:", key="explanation")
 
-        if st.button("Ask me a question"):
-            if not explanation.strip():
-                st.error("Please provide an explanation before "
-                         "asking for a question.")
-                return
+        # if st.button("Ask me a question"):
+        #     if not explanation.strip():
+        #         st.error("Please provide an explanation before "
+        #                  "asking for a question.")
+        #         return
 
-            inputs = {
-                "topic": room.topic,
-                "input": explanation,
-                # "whiteboard_image": "",  # Ignoring whiteboard for now
-                "chat_history": []
-            }
+        #     inputs = {
+        #         "topic": room.topic,
+        #         "input": explanation,
+        #         # "whiteboard_image": "",  # Ignoring whiteboard for now
+        #         "chat_history": []
+        #     }
 
-            with st.spinner("Generating question..."):
-                question = room.ask_question_chain.invoke(inputs)
+        #     with st.spinner("Generating question..."):
+        #         question = room.ask_question_chain.invoke(inputs)
 
-            st.write("**Bot's question:**", question)
+        #     st.write("**Bot's question:**", question)
 
 
 if __name__ == '__main__':
     router = StreamlitRouter()
     router.register(landing_page, '/')
-    router.register(room_page, '/room/<string:session_id>')
-    landing_page()
+    router.register(room_page, '/room/<string:room_id>')
+    router.serve()

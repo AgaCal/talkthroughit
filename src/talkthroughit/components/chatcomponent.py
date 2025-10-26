@@ -3,11 +3,11 @@ import streamlit as st
 import base64
 import io
 import speech_recognition as sr
-#from pydub import AudioSegment
+from pydub import AudioSegment
 speech_recognizer = sr.Recognizer()
 
 def audioRecording():
-    result = audio_recorder(interval=50, threshold=-60, silenceTimeout=200)
+    result = audio_recorder(interval=50, threshold=-60, silenceTimeout=1000)
     if result:
         if result.get("status") == "stopped":
             audio_data = result.get("audioData",)
@@ -15,11 +15,11 @@ def audioRecording():
                 audio_bytes = base64.b64decode(audio_data)
                 webm_buffer = io.BytesIO(audio_bytes)
                 st.audio(webm_buffer,format="audio/webm")
-                # audio_pydub = AudioSegment.from_file(webm_buffer, format="webm")
-                # wav_buffer = io.BytesIO()
-                # audio_pydub.export(wav_buffer, format="wav")
-                # with sr.AudioFile(wav_buffer) as source:
-                #     speech_recognizer.recognize_sphinx(source)
+                audio_pydub = AudioSegment.from_file(webm_buffer, format="webm")
+                wav_buffer = io.BytesIO()
+                audio_pydub.export(wav_buffer, format="wav")
+                with sr.AudioFile(wav_buffer) as source:
+                    speech_recognizer.recognize_sphinx(source)
             else:
                 pass
         elif result.get("error"):
@@ -28,13 +28,12 @@ def ask_me():
     pass
 
 
-def chatComponent():
+def chatComponent(room_info):
     if "gemini" not in st.session_state:
         st.session_state["gemini"] = "gemini-2.5-flash"
-
     if "messages" not in st.session_state:
         st.session_state.messages = []
-    message_container = st.container(height=400)
+    message_container = st.container(height=380)
 
     with message_container:
         for message in st.session_state.messages:
@@ -48,4 +47,11 @@ def chatComponent():
     with record:
         audioRecording()
     with ask:
-        st.button(label="", on_click=ask_me, icon=":material/question_mark:")
+        question_button = st.button(label="",icon=":material/question_mark:")
+        if question_button:
+            question = room_info.get_question("test")
+            st.session_state.messages.append({"role": "assistant", "content": question})
+            with message_container.chat_message("assistant"):
+                message_container.markdown(question)
+        
+        
