@@ -2,4 +2,4 @@
 
 Created for Knight Hacks VIII.
 
-Try it out: [https://talkthroughit.streamlit.app/](url)
+Try it out: [https://talkthroughit.streamlit.app/]()
