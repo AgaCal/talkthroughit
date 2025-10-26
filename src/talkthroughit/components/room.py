@@ -2,6 +2,7 @@ import streamlit as st
 from .chatcomponent import chatComponent
 from .tabs import render_tab_content
 from talkthroughit.rooms.room import get_room
+from streamlit_option_menu import option_menu
 
 def room_page(router,room_id):
     st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
@@ -57,10 +58,10 @@ def room_page(router,room_id):
 
     with st.sidebar:
         st.title(f"Topic: {room_info.topic}")
-        chosen_id = st.radio(
-            "Navigation",
-            ["canvas","code"],
-            label_visibility="collapsed"
+        chosen_id = option_menu(
+            menu_title=None,
+            options=["canvas","code"],
+            icons=["pencil","code"],
         )
         st.session_state.current_tab = chosen_id
 
