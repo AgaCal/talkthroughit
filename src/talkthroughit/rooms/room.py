@@ -10,7 +10,7 @@ from talkthroughit.llm.retrieval import create_vector_store
 # Define the base directory for session data
 @st.cache_data
 def get_sessions_dir() -> Path:
-    return Path(st.secrets['paths']['session_dir'])
+    return Path(st.secrets['paths']['rooms_dir'])
 
 
 class Room:
