@@ -83,7 +83,13 @@ def ask_a_question(room_info,message_container):
     )
     with message_container.chat_message("assistant"):
         message_container.markdown(question)
-    play(audio)
+    audio_bytes_io = io.BytesIO()
+    for chunk in audio:
+        audio_bytes_io.write(chunk)
+
+# Get the complete bytes object
+    audio_data_bytes = audio_bytes_io.getvalue()
+    st.audio(audio_data_bytes,autoplay=True)
 
 def chat(room_info):
     with st.container(key='main-chat-container',
