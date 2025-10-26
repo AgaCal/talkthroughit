@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_router import StreamlitRouter
 from talkthroughit.rooms.room import create_room, get_room
-from components.room import room_page
+from talkthroughit.components.room import room_page
 
 def landing_page(router) -> None:
     st.set_page_config(page_title="talkthrough.it — Create a Session", layout="wide")

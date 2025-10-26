@@ -105,16 +105,11 @@ def chat(room_info):
 
 
 def chatComponent(room_info, room_id):
-    # col1, col2,empty = st.columns([1,1,10])
-    # with col1:
-    if st.button("Get a question", width=100, key='get-question-button'):
-    # float_init()
     random.seed(room_id)
     if "gemini" not in st.session_state:
         st.session_state["gemini"] = "gemini-2.5-flash"
     if "messages" not in st.session_state:
         st.session_state.messages = []
     chat_container = st.container(height=600, border=True)
-    # chat_container.float()
     with chat_container:
         chat(room_info)
