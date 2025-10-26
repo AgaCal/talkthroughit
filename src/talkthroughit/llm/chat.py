@@ -38,7 +38,8 @@ def create_ask_question_chain(retriever: VectorStoreRetriever,
          "The topic is:\n"
          "<topic>\n"
          "{topic}\n"
-         "</topic>"
+         "</topic>\n"
+         + ("Additional explanation by the user:\n" if text_arguments else "")
          + "\n".join([f"<{text_arg}>\n{{text_arg}}\n</{text_arg}>"
                       for text_arg in text_arguments])),
         MessagesPlaceholder(variable_name='chat_history'),
@@ -83,11 +84,12 @@ def create_ask_question_chain(retriever: VectorStoreRetriever,
          "The topic is:\n"
          "<topic>\n"
          "{topic}\n"
-         "</topic>"
+         "</topic>\n"
          "The relevant context from the ground truth is:\n"
          "<context>\n"
          "{context}\n"
-         "</context>"
+         "</context>\n"
+         + ("Additional explanation by the user:\n" if text_arguments else "")
          + "\n".join([f"<{text_arg}>\n{{text_arg}}\n</{text_arg}>"
                       for text_arg in text_arguments])),
         MessagesPlaceholder(variable_name='chat_history'),
