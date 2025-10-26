@@ -3,7 +3,7 @@ import streamlit as st
 import base64
 import io
 import speech_recognition as sr
-from pydub import AudioSegment
+#from pydub import AudioSegment
 speech_recognizer = sr.Recognizer()
 
 def audioRecording():
@@ -44,8 +44,6 @@ def chatComponent():
         st.session_state.messages.append({"role": "user", "content": prompt})
         with message_container.chat_message("user"):
             message_container.markdown(prompt)
-
-    
     record, ask, emtpty = st.columns([1, 1, 2])
     with record:
         audioRecording()
