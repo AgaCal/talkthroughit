@@ -93,7 +93,7 @@ class Room:
 
         # Add the user's message and the bot's question to the history
         self.message_history.append(('user', user_message))
-        self.message_history.append(('bot', response['question']))
+        self.message_history.append(('assistant', response['question']))
 
         return response['good_enough'], response['question']  # type: ignore
 
