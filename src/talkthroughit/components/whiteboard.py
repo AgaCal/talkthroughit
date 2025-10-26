@@ -21,8 +21,11 @@ def whiteboard(width = 500, height = 500):
     make sure that the entire canvas fits in the screen!!! otherwise there's some weird behavior that's not worth fixing right now
     '''
     # to display canvas
-    # canvas_placeholder = st.empty()
-    col1, col2 = st.columns(2)
+    
+    whiteboard_container = st.container()
+
+    with whiteboard_container:
+        col1, col2 = st.columns([5,3])
 
     with col1:
         def select_drawing_mode():
@@ -53,40 +56,44 @@ def whiteboard(width = 500, height = 500):
 
     with col2:
 
-        label_col, slider_col = st.columns([1,3], vertical_alignment="center")
+        width_col, opacity_col = st.columns([1,1], vertical_alignment="center")
 
-        with label_col:
+        with width_col:
             st.markdown("Width:")
-            st.markdown("Opacity:")
-
-        with slider_col:
             stroke_width = st.slider(label="Width", label_visibility="collapsed", min_value=1, max_value=25, value=3)
+
+        with opacity_col:
+            st.markdown("Opacity:")
             stroke_opacity = st.slider("Opacity", label_visibility="collapsed", min_value=0.0, max_value=1.0, value=1.0)
-        fill = st.checkbox(label = "Fill?", value=True) if drawing_mode in ["rect", "circle"] else False
+        
+        fill_container = st.container()
+
+        if drawing_mode in ["rect", "circle"]:
+            fill = fill_container.checkbox(label = "Fill?", value=True)
+        else:
+            fill = False
+            fill_container.markdown('<div style="height: 48px;">&nbsp;</div>', unsafe_allow_html=True)
 
     with col1:
-        _, tmp_col_2, _ = st.columns([1,10,1])
-
         def select_stoke_color():
             tmp_stroke_color = color_select()
             return tmp_stroke_color, tmp_stroke_color + (hex(ceil(stroke_opacity * 255))[2:]).zfill(2)
 
-        with (tmp_col_2):
-            tmp_stroke_color, stroke_color = select_stoke_color()
+        tmp_stroke_color, stroke_color = select_stoke_color()
 
 
-    canvas_result = st_canvas(
-        stroke_width=stroke_width,
-        stroke_color=stroke_color if not fill else TRANSPARENT,
-        fill_color= stroke_color if fill else TRANSPARENT,
-        background_color=WHITE,
-        update_streamlit=True,
-        width=width,
-        height=height,
-        drawing_mode=drawing_mode,
-        key="canvas",
-    )
-
+    with whiteboard_container:
+        canvas_result = st_canvas(
+            stroke_width=stroke_width,
+            stroke_color=stroke_color if not fill else TRANSPARENT,
+            fill_color= stroke_color if fill else TRANSPARENT,
+            background_color=WHITE,
+            update_streamlit=True,
+            width=width,
+            height=height,
+            drawing_mode=drawing_mode,
+            key="canvas",
+        )
 
     if canvas_result.image_data is not None:
         img = Image.fromarray((canvas_result.image_data).astype('uint8'), 'RGBA')
