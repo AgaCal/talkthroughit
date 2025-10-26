@@ -43,7 +43,7 @@ def audioRecording():
                     if transcription.text in st.session_state.transcriptions:
                         return False
                     else:
-                        st.session_state.transcription.add(transcription.text)
+                        st.session_state.transcriptions.add(transcription.text)
                     print(transcription.text)
                     audio_data = None
                     if len(transcription.text.split()) < 10: return False
