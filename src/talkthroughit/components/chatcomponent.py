@@ -42,22 +42,25 @@ def chatComponent(room_info):
         st.session_state["gemini"] = "gemini-2.5-flash"
     if "messages" not in st.session_state:
         st.session_state.messages = []
-    message_container = st.container(height=380)
+
+    st.subheader("Chat")
+    message_container = st.container(height=500, border=True)
 
     with message_container:
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
-    if prompt := st.chat_input("What is up?"):
+
+    if prompt := st.chat_input("Ask me anything..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with message_container.chat_message("user"):
             message_container.markdown(prompt)
-    record, ask, emtpty = st.columns([1, 1, 2])
-    with record:
+
+    col1, col2 = st.columns(2)
+    with col1:
         audioRecording()
-    with ask:
-        question_button = st.button(label="",icon=":material/question_mark:")
-        if question_button:
+    with col2:
+        if st.button("Get a question", use_container_width=True):
             content = st.session_state.current_tab_data["content"]
             if st.session_state.current_tab_data["type"] == "code":
                 good_enough,question = room_info.get_question("test", code_snippet=content)
