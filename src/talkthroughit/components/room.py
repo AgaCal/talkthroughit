@@ -5,7 +5,7 @@ from talkthroughit.rooms.room import get_room
 
 def room_page(router,room_id):
     st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
-    room_info = get_room(st.session_state.room_id)
+    room_info = get_room(room_id)
 
     st.set_page_config(layout="wide")
     st.markdown("""
