@@ -1,37 +1,89 @@
 import streamlit as st
 from math import ceil
 from streamlit_drawable_canvas import st_canvas
+from streamlit_option_menu import option_menu
+from color_selector import color_select # type: ignore -- it's importing fine, but vs code is being weird about it
 
-stroke_width = "3"
-stroke_color = "#000000"
-drawing_mode = "freedraw"
+TRANSPARENT = "#00000000"
+WHITE = "#ffffff"
 
-canvas_result = st_canvas(
-    stroke_width=stroke_width,
-    stroke_color=stroke_color,
-    fill_color=stroke_color,
-    background_color="#ffffff",
-    update_streamlit=True,
-    width=1000,
-    height=750,
-    drawing_mode=drawing_mode,
-    key="canvas",
-)
+def whiteboard(width = 500, height = 500) -> st_canvas:
+    '''
+    a whiteboard component using streamlit-drawable-canvas
+    returns the canvas object, to get the image data, use canvas_result.image_data
+    buggy and resets on some interactions, will probably be fixed once i save stuff in session state somehow 
 
-drawing_mode = st.radio(
-    label="Drawing tool:", 
-    options=("freedraw", "line", "rect", "circle", "transform"),
-    horizontal = True
-)
+    make sure that the entire canvas fits in the screen!!! otherwise there's some weird behavior that's not worth fixing right now
+    '''
+    # to display canvas
+    canvas_placeholder = st.empty()
+    col1, col2 = st.columns(2)
 
-stroke_width = st.slider("Stroke width: ", 1, 25, 3)
+    with col2:
+        def select_drawing_mode():
+            drawing_modes = {
+                "freedraw": "pencil",
+                "line": "slash-lg",
+                "rect": "square",
+                "circle": "circle",
+                "transform": "hand-index-thumb"
+                }
+            
+            return option_menu(
+                menu_title=None, 
+                options=list(drawing_modes.keys()), 
+                icons=list(drawing_modes.values()), 
+                menu_icon="cast", 
+                default_index=0, 
+                orientation="horizontal",
+                styles= {
+                    "icon": {"font-size": "20px", "justify-content": "center"},
+                    "nav-link": { "font-size": "0px", "justify-content": "center"}
+                }
+            )
+        
+        drawing_mode = select_drawing_mode()
 
-tmp_stroke_color = st.color_picker("Stroke color hex: ")
-stroke_opacity = st.slider("Stroke opacity: ", min_value=0.0, max_value=1.0, value=1.0)
+    with col1:
 
-stroke_color = tmp_stroke_color + (hex(ceil(stroke_opacity * 255))[2:]).zfill(2)
+        label_col, slider_col = st.columns([1,3], vertical_alignment="center")
 
-print(stroke_color)
+        with label_col:
+            st.markdown("Width:")
+            st.markdown("Opacity:")
 
-if canvas_result.image_data is not None:
-    st.image(canvas_result.image_data)
+        with slider_col:
+            stroke_width = st.slider(label="Width", label_visibility="collapsed", min_value=1, max_value=25, value=3)
+            stroke_opacity = st.slider("Opacity", label_visibility="collapsed", min_value=0.0, max_value=1.0, value=1.0)
+        fill = st.checkbox(label = "Fill?", value=True) if drawing_mode in ["rect", "circle"] else False 
+
+    with col2:
+        _, tmp_col_2, _ = st.columns([1,10,1])
+
+        def select_stoke_color():
+            tmp_stroke_color = color_select()
+            return tmp_stroke_color + (hex(ceil(stroke_opacity * 255))[2:]).zfill(2)
+        
+        with (tmp_col_2):
+            stroke_color = select_stoke_color()
+
+    with canvas_placeholder.container():
+        canvas_result = st_canvas(
+            stroke_width=stroke_width,
+            stroke_color=stroke_color if not fill else TRANSPARENT,
+            fill_color= stroke_color if fill else TRANSPARENT,
+            background_color=WHITE,
+            update_streamlit=True,
+            width=width,
+            height=height,
+            drawing_mode=drawing_mode,
+            key="canvas",
+        )
+
+    # if canvas_result.image_data is not None:
+    #     st.image(canvas_result.image_data)
+
+    return canvas_result
+
+if __name__ == "__main__":
+    whiteboard(width=750)
