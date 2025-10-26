@@ -2,7 +2,10 @@ import streamlit as st
 from math import ceil
 from streamlit_drawable_canvas import st_canvas
 from streamlit_option_menu import option_menu
-from color_selector import color_select # type: ignore -- it's importing fine, but vs code is being weird about it
+from color_selector import color_select
+from PIL import Image
+from io import BytesIO
+import base64
 
 TRANSPARENT = "#00000000"
 WHITE = "#ffffff"
@@ -82,10 +85,14 @@ def whiteboard(width = 500, height = 500) -> st_canvas:
             key="canvas",
         )
 
-    # if canvas_result.image_data is not None:
-    #     st.image(canvas_result.image_data)
+    if canvas_result.image_data is not None:
+        img = Image.fromarray((canvas_result.image_data).astype('uint8'), 'RGBA')
 
-    return canvas_result
+        buffered = BytesIO()
+        img.save(buffered, format="PNG")
+        img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
+
+        st.session_state.current_tab_data["content"] = img_str
 
 if __name__ == "__main__":
     whiteboard(width=750)
