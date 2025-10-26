@@ -7,7 +7,7 @@ def landing_page(router) -> None:
     st.set_page_config(page_title="talkthrough.it — Create a Session", layout="wide")
 
     st.title("talkthrough.it")
-    st.subheader("Your collaborative learning space")
+    # st.subheader("Your collaborative learning space")
 
     st.markdown("---")
 
