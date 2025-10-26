@@ -1,2 +1,4 @@
 def main() -> None:
-    print("hello, world!")
+    from streamlit.web import bootstrap
+    bootstrap.run('app.py', '', [], [])
+    

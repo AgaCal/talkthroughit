@@ -22,7 +22,7 @@ dependencies = [
 ]
 
 [project.scripts]
-talkthroughit = "talkthroughit:main"
+app = "talkthroughit:main"
 
 [build-system]
 requires = ["hatchling"]
