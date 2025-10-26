@@ -59,3 +59,7 @@ div[data-testid="stRadio"] > label > div:first-child {
     border: 1px solid rgba(49, 51, 63, 0.2);
     opacity: 1.0;
 }
+.st-key-message-container {
+    height: 80% !important;
+    overflow-y: scroll;
+}
