@@ -19,6 +19,15 @@ div[data-testid="stRadio"] > label > div:first-child {
     right: 16px;
     width: inherit;
 }
+.st-key-main-container > * > * > *:nth-child(2) > * > * > * > * {
+    height: 100%;
+}
+.st-key-message-container {
+    height: 100% !important;
+}
+.st-key-chat-input > * > * {
+    /* padding: 16px !important; */
+}
 .st-key-chat-buttons-container {
     display: flex !important;
     flex-direction: row !important;
@@ -37,7 +46,7 @@ div[data-testid="stRadio"] > label > div:first-child {
     background: #efefef !important;
     border-radius: 5px;
     width: 55px;
-    height: 40px;
+    height: 40px !important;
     overflow: hidden;
     margin: 0;
     border: 1px solid rgba(49, 51, 63, 0.4);
@@ -46,4 +55,8 @@ div[data-testid="stRadio"] > label > div:first-child {
 .st-key-get-question-button + *:hover {
     border: 1px solid rgba(49, 51, 63, 0.2);
     opacity: 1.0;
+}
+.st-key-message-container {
+    height: 80% !important;
+    overflow-y: scroll;
 }
