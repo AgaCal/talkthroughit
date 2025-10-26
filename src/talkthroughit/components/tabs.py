@@ -8,7 +8,6 @@ def render_tab_content():
     current_tab_data = st.session_state.tabs[current_tab_index]
     st.session_state.current_tab_data = current_tab_data
     
-    print(current_tab_index,current_tab_data)
     if current_tab_data:
         if current_tab_data["type"] == "canvas":
             whiteboard(width=1000,height=400)
