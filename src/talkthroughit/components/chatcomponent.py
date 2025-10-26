@@ -81,8 +81,9 @@ def ask_a_question(room_info,message_container):
             "speed": 1.1,
         }
     )
-    with message_container.chat_message("assistant"):
-        message_container.markdown(question)
+    with message_container:
+        with st.chat_message("assistant"):
+            st.markdown(question)
     audio_bytes_io = io.BytesIO()
     for chunk in audio:
         audio_bytes_io.write(chunk)
@@ -102,12 +103,6 @@ def chat(room_info):
                     st.markdown(message["content"])
 
         with st.container(key='chat-bottom', border=False):
-            if prompt := st.chat_input("Ask me anything...", key='chat-input'):
-                for i in range(0, 100):
-                    st.markdown(" ")
-                st.session_state.messages.append({"role": "user", "content": prompt})
-                st.rerun()
-
             with st.container(key='chat-buttons-container', border=False):
                 if st.button("Get question", key='get-question-button'):
                     ask_a_question(room_info,message_container)
