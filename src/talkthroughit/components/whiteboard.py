@@ -21,7 +21,7 @@ def whiteboard(width = 500, height = 500):
     whiteboard_container = st.container()
 
     with whiteboard_container:
-        col1, col2 = st.columns([5,3], vertical_alignment='top')
+        col1, col2 = st.columns([3,1], vertical_alignment='top')
 
     with col1:
 
