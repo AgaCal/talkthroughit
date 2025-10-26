@@ -30,12 +30,12 @@ def room_page(router,room_id):
         chosen_id = option_menu(
             menu_title=None,
             options=["canvas","code"],
-            icons=["pencil","code"],
+            icons=["marker-tip","code"],
         )
         st.session_state.current_tab = chosen_id
 
     with st.container(key='main-container'):
-        col1,col2 = st.columns([3,1],gap='large')
+        col1,col2 = st.columns([0.7,0.3],gap='large')
         with col1:
             render_tab_content()
         with col2:

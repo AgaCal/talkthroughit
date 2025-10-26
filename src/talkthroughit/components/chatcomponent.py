@@ -88,21 +88,23 @@ def ask_a_question(room_info,message_container):
     play(audio)
 
 def chat(room_info):
-    message_container = st.container(border=False, key='message-container')
-    with message_container:
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+    with st.container(key='main-chat-container',
+                      border=False, vertical_alignment='distribute'):
+        with st.container(border=True, key='message-container', height='stretch'):
+            for message in st.session_state.messages:
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
 
-    if prompt := st.chat_input("Ask me anything...", key='chat-input'):
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        st.rerun()
+        with st.container(key='chat-bottom', border=False):
+            if prompt := st.chat_input("Ask me anything...", key='chat-input'):
+                st.session_state.messages.append({"role": "user", "content": prompt})
+                st.rerun()
 
-    with st.container(key='chat-buttons-container', border=False):
-        if st.button("Get a question", width=100, key='get-question-button'):
-            ask_a_question(room_info,message_container)
-        if audioRecording():
-            ask_a_question(room_info,message_container)
+            with st.container(key='chat-buttons-container', border=False):
+                if st.button("Get question", key='get-question-button'):
+                    ask_a_question(room_info,message_container)
+                if audioRecording():
+                    ask_a_question(room_info,message_container)
 
 
 def chatComponent(room_info, room_id):

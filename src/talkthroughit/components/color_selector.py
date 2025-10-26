@@ -37,10 +37,12 @@ def color_select():
         }}
 
         .st-key-color-selector div[role="radiogroup"] {{
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            justify-items: center;
-            gap: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left = auto;
+            margin-right = auto;
+            margin-top: -15px;
         }}
         {
             "".join(
