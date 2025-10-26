@@ -42,8 +42,10 @@ def whiteboard(width = 500, height = 500):
                 default_index=0, 
                 orientation="horizontal",
                 styles= {
+                    "container": {"padding": "0!important", "background-color": "#fafafa"},
                     "icon": {"font-size": "20px", "justify-content": "center"},
-                    "nav-link": { "font-size": "0px", "justify-content": "center"}
+                    "nav-link": { "font-size": "0px", "justify-content": "center", "margin":"0px", "--hover-color": "#eee"},
+                    "nav-link-selected": {"background-color": "#77dfd3"},
                 }
             )
         
@@ -67,10 +69,11 @@ def whiteboard(width = 500, height = 500):
 
         def select_stoke_color():
             tmp_stroke_color = color_select()
-            return tmp_stroke_color + (hex(ceil(stroke_opacity * 255))[2:]).zfill(2)
+            return tmp_stroke_color, tmp_stroke_color + (hex(ceil(stroke_opacity * 255))[2:]).zfill(2)
         
         with (tmp_col_2):
-            stroke_color = select_stoke_color()
+            tmp_stroke_color, stroke_color = select_stoke_color()
+
 
     canvas_result = st_canvas(
         stroke_width=stroke_width,

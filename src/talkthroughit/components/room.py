@@ -16,6 +16,26 @@ def room_page(router,room_id):
                     padding-left: 1rem;
                     padding-right: 2rem;
                 }
+               .main .block-container {
+                    background-color: #F0F2F6;
+                }
+                [data-testid="stSidebar"] {
+                    background-color: #FFFFFF;
+                }
+                /* Sidebar radio button styling */
+                div[data-testid="stRadio"] > label > div:first-child {
+                    display: none; /* hide the radio circle */
+                }
+                div[data-testid="stRadio"] > label {
+                    display: block;
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.5rem;
+                    margin-bottom: 0.5rem;
+                    background-color: #F0F2F6;
+                    color: #31333F;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
         </style>
         """, unsafe_allow_html=True)
 
@@ -34,10 +54,9 @@ def room_page(router,room_id):
     with st.sidebar:
         st.title(f"Topic: {room_info.topic}")
         chosen_id = st.radio(
-            " ",
+            "Navigation",
             tab_names,
-            index=tab_names.index(st.session_state.current_tab),
-            label_visibility="collapsed"
+            index=tab_names.index(st.session_state.current_tab)
         )
         st.session_state.current_tab = chosen_id
 

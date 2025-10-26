@@ -50,7 +50,10 @@ def color_select():
                     border-color: { "#aaa" if hex_code == "#000000" else hex_code };
                     border-width: 1px;
                     border-style: solid;
-                    
+                    transition: transform 0.2s;
+                }}
+                div[role="radiogroup"] > label:nth-child({i + 1}) > div > div:hover {{
+                    transform: scale(1.2);
                 }}
                 '''
             for i, hex_code in enumerate(colors))
