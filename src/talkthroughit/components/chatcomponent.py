@@ -45,29 +45,29 @@ def audioRecording():
 
 
 def chat(room_info):
-    message_container = st.container(height=300, border=False)
+    message_container = st.container(border=False, key='message-container')
     with message_container:
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
-    if prompt := st.chat_input("Ask me anything..."):
+    if prompt := st.chat_input("Ask me anything...", key='chat-input'):
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.rerun()
 
-    col1, col2,empty = st.columns([1,1,10])
-    with col1:
-        if st.button("Get a question", width=100):
-            content = st.session_state.current_tab_data["content"]
-            if st.session_state.current_tab_data["type"] == "code":
-                good_enough, question = room_info.get_question(
-                    "test", code_snippet=content
-                )
-            else:
-                good_enough, question = room_info.get_question(
-                    "test", whiteboard_image_b64=content
-                )
-            st.session_state.messages.append({"role": "assistant", "content": question})
+    # col1, col2,empty = st.columns([1,1,10])
+    # with col1:
+    if st.button("Get a question", width=100, key='get-question-button'):
+        content = st.session_state.current_tab_data["content"]
+        if st.session_state.current_tab_data["type"] == "code":
+            good_enough, question = room_info.get_question(
+                "test", code_snippet=content
+            )
+        else:
+            good_enough, question = room_info.get_question(
+                "test", whiteboard_image_b64=content
+            )
+        st.session_state.messages.append({"role": "assistant", "content": question})
             # audio = elevenlabs.text_to_speech.convert(
             #     text=question,
             #     voice_id="JBFqnCBsd6RMkjVDRZzb",
@@ -77,18 +77,18 @@ def chat(room_info):
             # with message_container.chat_message("assistant"):
             #     message_container.markdown(question)
             # play(audio)
-    with col2:
-        audioRecording()
-            
+    # with col2:
+    audioRecording()
+
 
 
 def chatComponent(room_info):
-    float_init()
+    # float_init()
     if "gemini" not in st.session_state:
         st.session_state["gemini"] = "gemini-2.5-flash"
     if "messages" not in st.session_state:
         st.session_state.messages = []
     chat_container = st.container(height=600, border=True)
-    chat_container.float()
+    # chat_container.float()
     with chat_container:
         chat(room_info)

@@ -29,6 +29,21 @@ def room_page(router,room_id):
         </style>
         """, unsafe_allow_html=True)
 
+    st.markdown("""<style>
+            .st-key-main-container > * {
+                height: 100vh !important;
+                display: flex !important;
+                /*overflow: hidden !important;*/
+            }
+            .st-key-main-container > * > * > *:nth-child(1) > * > * {
+                overflow: scroll !important;
+                display: block !important;
+            }
+                </style>""" , unsafe_allow_html=True)
+
+    with open('src/talkthroughit/static/styles.css', 'r') as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
     if "tabs" not in st.session_state:
         st.session_state.tabs = []
     if "current_tab" not in st.session_state:
@@ -39,7 +54,7 @@ def room_page(router,room_id):
         st.session_state.tabs.append({"name":"code","type" : "code", "content": ""})
 
     tab_names = [t["name"] for t in st.session_state.tabs]
-    
+
     with st.sidebar:
         st.title(f"Topic: {room_info.topic}")
         chosen_id = st.radio(
@@ -49,8 +64,9 @@ def room_page(router,room_id):
         )
         st.session_state.current_tab = chosen_id
 
-    col1,col2 = st.columns([3,1],gap='large')
-    with col1:
-        render_tab_content()
-    with col2:
-        chatComponent(room_info)
+    with st.container(key='main-container'):
+        col1,col2 = st.columns([3,1],gap='large')
+        with col1:
+            render_tab_content()
+        with col2:
+            chatComponent(room_info)
