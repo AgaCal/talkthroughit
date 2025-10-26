@@ -7,10 +7,10 @@ from .color_selector import color_select # type: ignore -- it's importing fine, 
 TRANSPARENT = "#00000000"
 WHITE = "#ffffff"
 
-def whiteboard(width = 500, height = 500) -> st_canvas:
+def whiteboard(width = 500, height = 500):
     '''
     a whiteboard component using streamlit-drawable-canvas
-    returns the canvas object, to get the image data, use canvas_result.image_data
+    doesn't return anything, but saves the current image as a base64 string in st.session_state.current_tab_data["content"]
     buggy and resets on some interactions, will probably be fixed once i save stuff in session state somehow 
 
     width and height are the dimensions of the canvas - not the entire component! menu extends beyond that
