@@ -92,12 +92,17 @@ class Room:
                 "Only one of code_snippet or whiteboard_image_b64 "
                 "should be provided.")
 
+        # Only send the user's past messages as context
+        # so the AI doesn't try to answer its own questions
+        message_history = [(role, text) for role, text in self.message_history
+                           if role == 'user']
+
         # Select the appropriate chain and prepare inputs
         chain = self.ask_question_chain
         inputs = {
             'topic': self.topic,
             'input': user_message,
-            'chat_history': self.message_history
+            'chat_history': message_history
         }
         if code_snippet is not None:
             chain = self.ask_question_chain_with_code
@@ -130,12 +135,17 @@ class Room:
                 "Only one of code_snippet or whiteboard_image_b64 "
                 "should be provided.")
 
+        # Only send the user's past messages as context
+        # so the AI doesn't try to answer its own questions
+        message_history = [(role, text) for role, text in self.message_history
+                           if role == 'user']
+
         # Select the appropriate chain and prepare inputs
         chain = self.ask_question_chain
         inputs = {
             'topic': self.topic,
             'input': user_message,
-            'chat_history': self.message_history
+            'chat_history': message_history
         }
         if code_snippet is not None:
             chain = self.ask_question_chain_with_code

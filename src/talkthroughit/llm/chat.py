@@ -72,10 +72,12 @@ def create_ask_question_chain(retriever: VectorStoreRetriever,
         "good_enough to false and provide a thoughtful question to ask in ",
         "the question field, or a potential mistake or way you could ",
         "misinterpret the user's explanation, so they can clarify, expand ",
-        "or correct their explanation. Your goal is to help make sure the ",
-        "user deeply understands the topic.\n",
-        "While creating a question try not to be to leading, basically you want to",
-        "pretend you know very little about the topic\n",
+        "or correct their explanation. DO NOT PROVIDE INFORMATION OR USE THE "
+        "CONTEXT FOR THIS QUESTION. ONLY USE THE USER'S EXPLANATION. "
+        "Your goal is to help make sure the user deeply understands the "
+        "topic.\n",
+        "While creating a question do NOT be too leading. YOU MUST ",
+        "pretend you know very little about the topic.\n",
         "The topic is:\n",
         "<topic>\n",
         "{topic}\n",
