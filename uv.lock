@@ -2541,6 +2541,18 @@ wheels = [
 ]
 
 [[package]]
+name = "streamlit-float"
+version = "0.3.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "streamlit" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/49/e9/133e3c5f42dd0db83263c1c1c67364390c68371fa4fbc945b2df867715c5/streamlit-float-0.3.5.tar.gz", hash = "sha256:a7cf12214e97bb99ed7cc25470af68974e5a51f65a956f31acf7b840d00cd153", size = 13211, upload-time = "2024-06-08T15:33:12.301Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/74/45/c4ff347f85e575de70cf225f7ec57db04d80a6d693b8afde2575a1183dea/streamlit_float-0.3.5-py3-none-any.whl", hash = "sha256:fa329f37b6e9280fa06519fa0ca89e1d5605b38240f49395700312e7a679e47e", size = 11980, upload-time = "2024-06-08T15:33:11.021Z" },
+]
+
+[[package]]
 name = "streamlit-option-menu"
 version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2588,6 +2600,7 @@ dependencies = [
     { name = "streamlit" },
     { name = "streamlit-code-editor" },
     { name = "streamlit-drawable-canvas" },
+    { name = "streamlit-float" },
     { name = "streamlit-option-menu" },
     { name = "streamlit-realtime-audio-recorder" },
     { name = "streamlit-router" },
@@ -2604,6 +2617,7 @@ requires-dist = [
     { name = "streamlit", specifier = ">=1.50.0" },
     { name = "streamlit-code-editor", specifier = ">=0.1.22" },
     { name = "streamlit-drawable-canvas", specifier = ">=0.9.3" },
+    { name = "streamlit-float", specifier = ">=0.3.5" },
     { name = "streamlit-option-menu", specifier = ">=0.4.0" },
     { name = "streamlit-realtime-audio-recorder", specifier = ">=0.1.2" },
     { name = "streamlit-router", specifier = ">=0.1.8" },
