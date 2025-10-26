@@ -69,4 +69,4 @@ def room_page(router,room_id):
         with col1:
             render_tab_content()
         with col2:
-            chatComponent(room_info)
+            chatComponent(room_info,room_id)
