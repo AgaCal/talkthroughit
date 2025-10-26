@@ -47,6 +47,7 @@ def audioRecording():
                         diarize=True,
                     )
                     print(transcription.text)
+                    if len(transcription.text.split()) < 10: return False 
                     st.session_state.text_from_audio.append([transcription.text, False])
                     audio_data = None
                     return True
