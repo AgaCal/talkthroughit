@@ -7,10 +7,21 @@ from elevenlabs.play import play
 import requests
 import tempfile
 from streamlit_float import *
+import random
 
 elevenlabs = ElevenLabs(api_key=st.secrets["elevenlabs"]["api_key"])
 
-
+voices = [
+    "tKgCp3kvJcxolDDquyBS",
+    "giAoKpl5weRTCJK7uB9b",
+    "1BUhH8aaMvGMUdGAmWVM",
+    "qA5SHJ9UjGlW2QwXWR7w",
+    "khYwAWwYSjlxlcrwGQ16",
+    "Qggl4b0xRMiqOwhPtVWT",
+    "O4cGUVdAocn0z4EpQ9yF",
+    "kBag1HOZlaVBH7ICPE8x",
+    "JBFqnCBsd6RMkjVDRZzb",
+]
 def audioRecording():
     if "text_from_audio" not in st.session_state:
         st.session_state.text_from_audio = []
@@ -37,12 +48,43 @@ def audioRecording():
                     )
                     print(transcription.text)
                     st.session_state.text_from_audio.append([transcription.text, False])
-
+                    audio_data = None
+                    return True    
             else:
                 pass
         elif result.get("error"):
             st.error(f"Error: {result.get('error')}")
-
+            
+            
+def ask_a_question(room_info,message_container):
+    content = st.session_state.current_tab_data["content"]
+    context_message = ""
+    for message,sent in st.session_state.text_from_audio:
+        if not sent:
+            context_message += message + '\n'
+            sent = True
+    if st.session_state.current_tab_data["type"] == "code":
+        good_enough, question = room_info.get_question(
+            context_message, code_snippet=content
+        )
+    else:
+        good_enough, question = room_info.get_question(
+            context_message, whiteboard_image_b64=content
+        )
+    
+    st.session_state.messages.append({"role": "assistant", "content": question})
+    audio = elevenlabs.text_to_speech.convert(
+        text=question,
+        voice_id=voices[random.randint(0,len(voices)-1)],
+        model_id="eleven_multilingual_v2",
+        output_format="mp3_44100_128",
+        voice_settings = {
+            "speed": 1.1,
+        }
+    )
+    with message_container.chat_message("assistant"):
+        message_container.markdown(question)
+    play(audio)
 
 def chat(room_info):
     message_container = st.container(border=False, key='message-container')
@@ -58,32 +100,12 @@ def chat(room_info):
     # col1, col2,empty = st.columns([1,1,10])
     # with col1:
     if st.button("Get a question", width=100, key='get-question-button'):
-        content = st.session_state.current_tab_data["content"]
-        if st.session_state.current_tab_data["type"] == "code":
-            good_enough, question = room_info.get_question(
-                "test", code_snippet=content
-            )
-        else:
-            good_enough, question = room_info.get_question(
-                "test", whiteboard_image_b64=content
-            )
-        st.session_state.messages.append({"role": "assistant", "content": question})
-        audio = elevenlabs.text_to_speech.convert(
-            text=question,
-            voice_id="JBFqnCBsd6RMkjVDRZzb",
-            model_id="eleven_multilingual_v2",
-            output_format="mp3_44100_128",
-        )
-        with message_container.chat_message("assistant"):
-            message_container.markdown(question)
-        play(audio)
-    # with col2:
-    audioRecording()
-
-
-
-def chatComponent(room_info):
+        ask_a_question(room_info,message_container)
+    if audioRecording():
+        ask_a_question(room_info,message_container)
+def chatComponent(room_info,room_id):
     # float_init()
+    random.seed(room_id)
     if "gemini" not in st.session_state:
         st.session_state["gemini"] = "gemini-2.5-flash"
     if "messages" not in st.session_state:
