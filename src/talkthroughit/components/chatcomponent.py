@@ -3,10 +3,13 @@ import streamlit as st
 import base64
 import io
 from elevenlabs.client import ElevenLabs
+from elevenlabs.play import play
 import requests
 import tempfile
+from streamlit_float import *
 
 elevenlabs = ElevenLabs(api_key=st.secrets["elevenlabs"]["api_key"])
+
 
 def audioRecording():
     if "text_from_audio" not in st.session_state:
@@ -40,21 +43,21 @@ def audioRecording():
         elif result.get("error"):
             st.error(f"Error: {result.get('error')}")
 
+
 def chat(room_info):
-    message_container = st.container(height=300,border=False)
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
+    message_container = st.container(height=300, border=False)
+    with message_container:
+        for message in st.session_state.messages:
+            with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
     if prompt := st.chat_input("Ask me anything..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.rerun()
 
-    col1, col2  = st.columns(2)
+    col1, col2,empty = st.columns([1,1,10])
     with col1:
-        audioRecording()
-    with col2:
-        if st.button("Get a question", use_container_width=True):
+        if st.button("Get a question", width=100):
             content = st.session_state.current_tab_data["content"]
             if st.session_state.current_tab_data["type"] == "code":
                 good_enough, question = room_info.get_question(
@@ -65,15 +68,27 @@ def chat(room_info):
                     "test", whiteboard_image_b64=content
                 )
             st.session_state.messages.append({"role": "assistant", "content": question})
-            with message_container.chat_message("assistant"):
-                message_container.markdown(question)
+            # audio = elevenlabs.text_to_speech.convert(
+            #     text=question,
+            #     voice_id="JBFqnCBsd6RMkjVDRZzb",
+            #     model_id="eleven_multilingual_v2",
+            #     output_format="mp3_44100_128",
+            # )
+            # with message_container.chat_message("assistant"):
+            #     message_container.markdown(question)
+            # play(audio)
+    with col2:
+        audioRecording()
+            
+
 
 def chatComponent(room_info):
+    float_init()
     if "gemini" not in st.session_state:
         st.session_state["gemini"] = "gemini-2.5-flash"
     if "messages" not in st.session_state:
         st.session_state.messages = []
     chat_container = st.container(height=600, border=True)
+    chat_container.float()
     with chat_container:
         chat(room_info)
-        
