@@ -16,7 +16,9 @@ def get_chat_model():
     return ChatGoogleGenerativeAI(model=chat_model, api_key=api_key)
 
 
-def create_ask_question_chain(retriever: VectorStoreRetriever):
+def create_ask_question_chain(retriever: VectorStoreRetriever,
+                              text_arguments: list[str] = [],
+                              image_arguments: list[str] = []):
     """
     Creates a retrieval chain using the chat model and given retriever.
     The chain accepts an input dict containing keys: topic, input,
@@ -27,8 +29,8 @@ def create_ask_question_chain(retriever: VectorStoreRetriever):
         ('system',
          "You are a layperson trying to understand a complex topic. "
          "You are given the topic and a history of the user's explanation, "
-         "as well as a current whiteboard visualization and any questions "
-         "you've asked so far.\n"
+         "as well as a current visualization (whiteboard or code) and any "
+         "questions you've asked so far.\n"
          "Given this, summarize the explanation so far with all relevant "
          "details from the user's prior answers, so we can use it to "
          "search for relevant information from the ground truth to "
@@ -36,17 +38,21 @@ def create_ask_question_chain(retriever: VectorStoreRetriever):
          "The topic is:\n"
          "<topic>\n"
          "{topic}\n"
-         "</topic>"),
+         "</topic>"
+         + "\n".join([f"<{text_arg}>\n{{text_arg}}\n</{text_arg}>"
+                      for text_arg in text_arguments])),
         MessagesPlaceholder(variable_name='chat_history'),
         ('human', [
             {
                 'type': 'text',
                 'text': "{input}"
             },
-            # {
-            #     'type': 'image_url',
-            #     'image_url': "data:image/png;base64,{whiteboard_image}"
-            # }
+            *[{
+                'type': 'image_url',
+                'image_url': "data:image/png;base64,{"
+                             f"{arg}"
+                             "}"
+            } for arg in image_arguments]
         ]),
     ])
 
@@ -65,8 +71,8 @@ def create_ask_question_chain(retriever: VectorStoreRetriever):
         ('system',
          "You are a layperson trying to understand a complex topic. "
          "You are given the topic and a history of the user's explanation, "
-         "as well as a current whiteboard visualization and any questions "
-         "you've asked so far.\n"
+         "as well as a current visualization (whiteboard or code) and any "
+         "questions you've asked so far.\n"
          "Given this, and context representing the ground truth about the "
          "topic, compare them and make sure the user's explanation is "
          "accurate.\n"
@@ -81,17 +87,21 @@ def create_ask_question_chain(retriever: VectorStoreRetriever):
          "The relevant context from the ground truth is:\n"
          "<context>\n"
          "{context}\n"
-         "</context>"),
+         "</context>"
+         + "\n".join([f"<{text_arg}>\n{{text_arg}}\n</{text_arg}>"
+                      for text_arg in text_arguments])),
         MessagesPlaceholder(variable_name='chat_history'),
         ('human', [
             {
                 'type': 'text',
                 'text': "{input}"
             },
-            # {
-            #     'type': 'image_url',
-            #     'image_url': "data:image/png;base64,{whiteboard_image}"
-            # }
+            *[{
+                'type': 'image_url',
+                'image_url': "data:image/png;base64,{"
+                             f"{arg}"
+                             "}"
+            } for arg in image_arguments]
         ]),
     ])
 
