@@ -1,9 +1,9 @@
 import streamlit as st
-
+from streamlit_router import StreamlitRouter
 from talkthroughit.rooms.room import create_room, get_room
+from components.room import room_page
 
-
-def main() -> None:
+def landing_page() -> None:
     st.set_page_config(page_title="talkthrough.it — create session")
     st.title("talkthrough.it — create a session")
 
@@ -44,7 +44,8 @@ def main() -> None:
 
         # Persist room_id in session state for QA step
         st.session_state.room_id = room_id
-
+        session_page = router.build("room_page",{"session_id" : room_id})
+        router.redirect(*session_page)
     # QA step after room creation
     if "room_id" in st.session_state:
         room_id = st.session_state.room_id
@@ -73,4 +74,7 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    router = StreamlitRouter()
+    router.register(landing_page, '/')
+    router.register(room_page, '/room/<string:session_id>')
+    landing_page()
