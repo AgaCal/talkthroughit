@@ -47,7 +47,7 @@ def audioRecording():
                         diarize=True,
                     )
                     print(transcription.text)
-                    if len(transcription.text.split()) < 10: return False 
+                    if len(transcription.text.split()) < 10: return False
                     st.session_state.text_from_audio.append([transcription.text, False])
                     audio_data = None
                     return True
@@ -90,7 +90,8 @@ def ask_a_question(room_info,message_container):
 def chat(room_info):
     with st.container(key='main-chat-container',
                       border=False, vertical_alignment='distribute'):
-        with st.container(border=True, key='message-container', height='stretch'):
+        message_container = st.container(border=True, key='message-container', height='stretch')
+        with message_container:
             for message in st.session_state.messages:
                 with st.chat_message(message["role"]):
                     st.markdown(message["content"])
