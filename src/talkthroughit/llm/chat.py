@@ -43,10 +43,10 @@ def create_ask_question_chain(retriever: VectorStoreRetriever):
                 'type': 'text',
                 'text': "{input}"
             },
-            {
-                'type': 'image_url',
-                'image_url': "data:image/png;base64,{whiteboard_image}"
-            }
+            # {
+            #     'type': 'image_url',
+            #     'image_url': "data:image/png;base64,{whiteboard_image}"
+            # }
         ]),
     ])
 
@@ -88,10 +88,10 @@ def create_ask_question_chain(retriever: VectorStoreRetriever):
                 'type': 'text',
                 'text': "{input}"
             },
-            {
-                'type': 'image_url',
-                'image_url': "data:image/png;base64,{whiteboard_image}"
-            }
+            # {
+            #     'type': 'image_url',
+            #     'image_url': "data:image/png;base64,{whiteboard_image}"
+            # }
         ]),
     ])
 
