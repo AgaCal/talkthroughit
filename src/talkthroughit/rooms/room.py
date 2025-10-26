@@ -1,9 +1,15 @@
 import uuid
+from collections.abc import Iterator
 from pathlib import Path
 
 import streamlit as st
 
-from talkthroughit.llm.chat import QuestionResponse, create_ask_question_chain
+from talkthroughit.llm.chat import (
+    QuestionResponse,
+    create_ask_question_chain,
+    create_streamed_ask_question_chain,
+    evalute_response,
+)
 from talkthroughit.llm.retrieval import create_vector_store
 
 
@@ -55,6 +61,18 @@ class Room:
             self.retriever,
             text_arguments=['code_snippet'])
 
+        # Set up streamed question-asking chains
+        self.streamed_ask_question_chain = create_streamed_ask_question_chain(
+            self.retriever)
+        self.streamed_ask_question_chain_with_whiteboard = \
+            create_streamed_ask_question_chain(
+                self.retriever,
+                image_arguments=['whiteboard_image'])
+        self.streamed_ask_question_chain_with_code = \
+            create_streamed_ask_question_chain(
+                self.retriever,
+                text_arguments=['code_snippet'])
+
     def get_question(self, user_message: str,
                      code_snippet: str | None = None,
                      whiteboard_image_b64: str | None = None) \
@@ -96,6 +114,50 @@ class Room:
         self.message_history.append(('assistant', response.question))
 
         return response.good_enough, response.question  # type: ignore
+
+    def get_question_stream(self, user_message: str,
+                            code_snippet: str | None = None,
+                            whiteboard_image_b64: str | None = None) \
+            -> Iterator[str | bool]:
+        """
+        Same as get_question, but returns a stream for the response.
+        Tokens are streamed until exhausted, then a second pass with an LLM
+        is used to determine whether the sentiment of the response indicates
+        sufficient understanding. If so, True is yielded last; else False.
+        """
+        if code_snippet is not None and whiteboard_image_b64 is not None:
+            raise ValueError(
+                "Only one of code_snippet or whiteboard_image_b64 "
+                "should be provided.")
+
+        # Select the appropriate chain and prepare inputs
+        chain = self.ask_question_chain
+        inputs = {
+            'topic': self.topic,
+            'input': user_message,
+            'chat_history': self.message_history
+        }
+        if code_snippet is not None:
+            chain = self.ask_question_chain_with_code
+            inputs['code_snippet'] = code_snippet
+        elif whiteboard_image_b64 is not None:
+            chain = self.ask_question_chain_with_whiteboard
+            inputs['whiteboard_image'] = whiteboard_image_b64
+
+        # Invoke the chain to get a streamed response
+        response_stream = chain.invoke_stream(inputs)  # type: ignore
+        full_response = ""
+        for chunk in response_stream:
+            yield chunk
+            full_response += chunk
+
+        # Add the user's message and the bot's question to the history
+        self.message_history.append(('user', user_message))
+        self.message_history.append(('assistant', full_response))
+
+        # Second pass to determine good_enough
+        good_enough = evalute_response(full_response)
+        yield good_enough
 
 
 @st.cache_resource(ttl='1d')
