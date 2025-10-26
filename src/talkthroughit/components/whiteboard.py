@@ -82,10 +82,14 @@ def whiteboard(width = 500, height = 500) -> st_canvas:
             key="canvas",
         )
 
-    # if canvas_result.image_data is not None:
-    #     st.image(canvas_result.image_data)
+    if canvas_result.image_data is not None:
+        img = Image.fromarray((canvas_result.image_data).astype('uint8'), 'RGBA')
 
-    return canvas_result
+        buffered = BytesIO()
+        img.save(buffered, format="PNG")
+        img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
+
+        st.session_state.current_tab_data["content"] = img_str
 
 if __name__ == "__main__":
     whiteboard(width=750)
