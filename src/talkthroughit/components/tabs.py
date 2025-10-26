@@ -4,10 +4,11 @@ from .whiteboard import whiteboard
 
 def render_tab_content():
     chosen_id = st.session_state.current_tab
-    current_tab_data = next((tab for tab in st.session_state.tabs if tab["name"] == chosen_id), None)
-    current_tab_index = next((i for i, tab in enumerate(st.session_state.tabs) if tab["name"] == chosen_id), None)
-
+    current_tab_index = [i for i, tab in enumerate(st.session_state.tabs) if tab["name"] == chosen_id][0]
+    current_tab_data = st.session_state.tabs[current_tab_index]
     st.session_state.current_tab_data = current_tab_data
+    
+    print(current_tab_index,current_tab_data)
     if current_tab_data:
         if current_tab_data["type"] == "canvas":
             whiteboard(width=1000,height=400)

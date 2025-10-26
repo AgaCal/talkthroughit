@@ -26,22 +26,11 @@ def room_page(router,room_id):
                 div[data-testid="stRadio"] > label > div:first-child {
                     display: none; /* hide the radio circle */
                 }
-                div[data-testid="stRadio"] > label {
-                    display: block;
-                    padding: 0.5rem 1rem;
-                    border-radius: 0.5rem;
-                    margin-bottom: 0.5rem;
-                    background-color: #F0F2F6;
-                    color: #31333F;
-                    font-weight: bold;
-                    cursor: pointer;
-                }
         </style>
         """, unsafe_allow_html=True)
 
     if "tabs" not in st.session_state:
         st.session_state.tabs = []
-    
     if "current_tab" not in st.session_state:
         st.session_state.current_tab = "canvas"
 
@@ -55,8 +44,8 @@ def room_page(router,room_id):
         st.title(f"Topic: {room_info.topic}")
         chosen_id = st.radio(
             "Navigation",
-            tab_names,
-            index=tab_names.index(st.session_state.current_tab)
+            ["canvas","code"],
+            label_visibility="collapsed"
         )
         st.session_state.current_tab = chosen_id
 
