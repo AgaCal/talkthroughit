@@ -104,9 +104,9 @@ def chat(room_info):
 
         with st.container(key='chat-bottom', border=False):
             with st.container(key='chat-buttons-container', border=False):
-                if st.button("Get question", key='get-question-button'):
-                    ask_a_question(room_info,message_container)
-                elif audioRecording():
+                # if st.button("Get question", key='get-question-button'):
+                #     ask_a_question(room_info,message_container)
+                if audioRecording():
                     ask_a_question(room_info,message_container)
                 else:
                     with st.container(key='audio-container', border=False):
