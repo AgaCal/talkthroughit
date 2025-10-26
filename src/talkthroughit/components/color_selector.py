@@ -24,18 +24,19 @@ def color_select():
         format_func=lambda x: "",
         index=2,
         horizontal=True,
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        key="color-selector",
     )
 
     # css yippee
     st.markdown(f"""
     <style>
         /* 1. HIDE THE EMPTY TEXT LABEL */
-        [data-testid="stRadio"] [data-testid="stMarkdownContainer"] {{
+        .st-key-color-selector [data-testid="stRadio"] [data-testid="stMarkdownContainer"] {{
             display: none;
         }}
 
-        div[role="radiogroup"] {{
+        .st-key-color-selector div[role="radiogroup"] {{
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             justify-items: center;
@@ -45,14 +46,14 @@ def color_select():
             "".join(
                 f'''
                 /* Find the label that has the input with this value */
-                div[role="radiogroup"] > label:nth-child({i + 1}) > div > div {{
+                .st-key-color-selector div[role="radiogroup"] > label:nth-child({i + 1}) > div > div {{
                     background-color: {hex_code};
                     border-color: { "#aaa" if hex_code == "#000000" else hex_code };
                     border-width: 1px;
                     border-style: solid;
                     transition: transform 0.2s;
                 }}
-                div[role="radiogroup"] > label:nth-child({i + 1}) > div > div:hover {{
+                .st-key-color-selector div[role="radiogroup"] > label:nth-child({i + 1}) > div > div:hover {{
                     transform: scale(1.2);
                 }}
                 '''
